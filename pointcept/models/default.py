@@ -18,6 +18,7 @@ class Segmentor(nn.Module):
         self.seg_head = nn.Linear(backbone_out_channels, num_classes)
         self.backbone = PointTransformerV3()
         self.criteria = build_criteria(criteria)
+        print(self.criteria)
 
     def forward(self, input_dict):
         point = Point(input_dict)
@@ -29,5 +30,5 @@ class Segmentor(nn.Module):
         else:
             feat = point
         seg_logits = self.seg_head(feat)
-
+        loss = self.criteria(seg_logits, input_dict['segment'])
         return dict(seg_logits=seg_logits)
